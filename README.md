@@ -4,4 +4,4 @@ Demonstration of a spectral modelling system for the forth year 'Phyical Modelli
 
 Coded with MATLAB and presented via an HTML website.
 
-The project can be viewed via the HTML 'index' and can be downloaded via the 'Assets' tab.
+The project can be viewed via the HTML index and can be downloaded via the assets tab.

@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- ELE00102M Physical Modelling Synthesis 2020/21 - Exam No. Y3857872 -->
+
+<!-- HTML Page Data -->
+<head>
+  <!-- Meta Tags -->
+  <meta charset="UTF-8">
+  <title>System Design</title>
+  <meta name="description" content="System Design of PMS Assignment - Y3857872">
+  <meta name="author" content="Y3857872">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+  <link rel="stylesheet" href="css/global.css">
+  <!-- External Libraries -->
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha384-ZvpUoO/+PpLXR1lu4jmpXWu80pZlYUAfxl5NsBMWOEPSjUn/6Z/hRTt8+pR6L4N2" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+</head>
+
+<!-- HTML Page Body -->
+<body>
+
+<!-- Navbar -->
+<h1 class="font-weight-lighter text-center">Spectral Modelling Synthesis -&nbsp;Y3857872</h1>
+<nav class="navbar navbar-light navbar-expand-md">
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarContent"
+          aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse text-center justify-content-center" id="navbarContent">
+    <div class="navbar-nav">
+      <a class="nav-item nav-link mx-3" href="./index.html">INTRODUCTION</a>
+      <a class="nav-item nav-link mx-3 active">DESIGN<span class="sr-only">(current)</span></a>
+      <a class="nav-item nav-link mx-3" href="./examples.html">EXAMPLES</a>
+      <a class="nav-item nav-link mx-3" href="./conclusion.html">CONCLUSION</a>
+      <a class="nav-item nav-link mx-3" href="./assets.html">ASSETS</a>
+    </div>
+  </div>
+</nav>
+<div class="hline"></div>
+
+<main>
+  <h1 class="font-weight-lighter">SYSTEM DESIGN</h1>
+  <p>
+    This system design utilises spectral modelling synthesis to perform audio based effects in the form of pitch
+    transposition and resonance amplitude control. Overall, the system separates out the deterministic and stochastic
+    parts of an audio sample before transforming and resynthesising the output. The code utilises and adapts certain
+    MATLAB scripts and functions from the ‘SMSMatlab’ package, developed by the Music Technology Group at Pompeu Fabra
+    University in Barcelona. This package is responsible for separating monophonic audio into Serra’s deterministic and
+    stochastic format, however the code has been altered to allow for pitch transposition and stereo support. A block
+    diagram showing the entire system design can be seen in Figure 5:
+  </p>
+  <img class="w-50 mt-3" src="./rsc/img/SMS_SystemDesign.jpg" alt="System Design Diagram">
+  <p class="img-caption">Figure 5: System Design Diagram.</p>
+  <p>
+    At the start of the top level system script, the user is able to define a small selection of variables that will
+    alter the output of the system, including, the pitch transposition, the spectral resonance balance, and the data
+    output’s representation.
+  </p>
+  <img class="w-75 mt-3" src="./rsc/img/Code_Input.png" alt="System Code - User Input">
+  <p class="img-caption">Figure 6: System Code - User Input.</p>
+  <p>
+    The number of audio channels is first checked (mono or stereo) and correctly formatted if needed. For stereo files,
+    the two channels are first combined to a single data column before they are analysed by the system.
+  </p>
+  <img class="w-75 mt-3" src="./rsc/img/Code_FileAnalysis.png" alt="System Code - File Analysis">
+  <p class="img-caption">Figure 7: System Code - File Analysis.</p>
+  <p>
+    The system then passes the recording data into the ‘SMSMatlab’ package function, along with the file’s sampling
+    rate, setting defaults, and the user input variables. For this spectral system, a 1025-point Blackman window with an
+    FFT size of 4096 and a threshold of -100dB is used by default.
+  </p>
+  <img class="w-75 mt-3" src="./rsc/img/Code_SMS.png" alt="System Code - SMS Function">
+  <p class="img-caption">Figure 8: System Code - SMS Function.</p>
+  <p>
+    Within the ‘spsmodel’ function, the audio waveform is split into equal segments and transformed using a fast Fourier
+    transform (FFT) to detect prominent frequency peaks within the spectrum. The conventional Fourier transform allows
+    the conversion of a continuous time domain waveform into its sinusoidal frequency components. The most common
+    mathematical definition of a continuous Fourier transform is:
+  </p>
+  <img class="w-50" src="./rsc/img/Math_Fourier.png" alt="Maths Equation - Fourier Transform">
+  <p class="img-caption">Figure 9: Fourier Transform Equation.</p>
+  <p>
+    Where ’t’ is the continuous time index in seconds and ‘w’ is the continuous frequency index expressed in radians per
+    second. As digital waveforms are typically sampled and not continuous, the FFT builds from conventional Fourier and
+    instead transforms windowed segments of the signal to return discrete frequency values. The discrete-time FFT is
+    mathematically defined as:
+  </p>
+  <img class="w-50" src="./rsc/img/Math_STFT.png" alt="Maths Equation - STFT">
+  <p class="img-caption">Figure 10: Short Time Fourier Transform Equation.</p>
+  <p>
+    Where ‘x<sub>n</sub>’ represents the discrete time-domain samples and ‘X<sub>k</sub>’ represents the discrete
+    transformed frequency values. These discrete frequency values often scalp the true value and thus are then
+    interpolated by the ‘spsmodel’ function to find the exact frequency values.
+  </p>
+  <p>
+    To transform the audio, the sinusoidal content is adjusted based on the number of semitones the user would like to
+    transpose up or down. Pitch transposition is performed in correlation between chromatic intervals and frequency
+    values where each octave up or down relates to frequencies being doubled or halved respectively before transposing
+    the remaining interval. The code used to transform the frequency content can be seen in Figure 11:
+  </p>
+  <img class="w-75 mt-3" src="./rsc/img/Code_Transformation.png" alt="System Code - SMS Transformation">
+  <p class="img-caption">Figure 11: System Code - SMS Transformation.</p>
+  <p>
+    After synthesising the transformed sinusoidal content, the deterministic and stochastic parts extracted by the
+    ‘spsmodel’ function are both returned to the top level system script to be adjusted by the resonance balance. The
+    final output ‘y’ can then be played back to the user with optional spectrograms plotted comparing the input to the
+    output or the synthesised sinusoidal to the noise components spectrums.
+  </p>
+  <img class="w-75 mt-3" src="./rsc/img/Code_Balance.png" alt="System Code - Resonance Balance">
+  <p class="img-caption">Figure 12: System Code - Resonance Balance.</p>
+</main>
+
+<!-- Footer -->
+<footer class="w-100 p-2 footer text-center">
+  ELE00102M Physical Modelling Synthesis 2020/21 - Exam No. Y3857872
+</footer>
+
+</body>
+</html>
